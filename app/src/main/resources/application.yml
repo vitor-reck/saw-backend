@@ -1,0 +1,16 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: sawdb
+      authentication-database: admin
+
+logging:
+  level:
+    org:
+      hibernate: ERROR
+
+server:
+  servlet:
+    context-path: /api
