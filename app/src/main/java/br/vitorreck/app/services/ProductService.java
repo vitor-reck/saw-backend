@@ -1,7 +1,10 @@
 package br.vitorreck.app.services;
 
+import br.vitorreck.app.domain.dto.product.ProductRequestDTO;
+import br.vitorreck.app.domain.dto.product.ProductResponseDTO;
 import br.vitorreck.app.domain.model.Category;
 import br.vitorreck.app.domain.model.Product;
+import br.vitorreck.app.mappers.ProductMapper;
 import br.vitorreck.app.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
@@ -9,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.*;
 
 @Service
@@ -20,9 +22,13 @@ public class ProductService {
   private static final String PRODUCT_ALREADY_EXISTS = "Product previously created, please update with new fields";
   private final ProductRepository productRepository;
   private final CategoryService categoryService;
+  private final ProductMapper productMapper;
 
-  public List<Product> listProducts(Pageable pageable) {
-    List<Product> products = productRepository.findAll(pageable).getContent();
+  public List<ProductResponseDTO> listProducts(Pageable pageable) {
+    List<ProductResponseDTO> products = productRepository.findAll(pageable).getContent()
+        .stream()
+        .map(productMapper::toDTO)
+        .toList();
 
     if (products.isEmpty())
       throw new NoSuchElementException(PRODUCT_NOT_FOUND);
@@ -30,36 +36,39 @@ public class ProductService {
       return products;
   }
 
-  public Product retrieveProductByString(String id) {
+  public ProductResponseDTO retrieveProductByString(String id) {
     return productRepository.findById(id)
+        .map(productMapper::toDTO)
         .orElseThrow(() -> new NoSuchElementException(PRODUCT_NOT_FOUND));
   }
 
-  public Product createProduct(Product product) {
-    productRepository.findByName(product.getName())
+  public ProductResponseDTO createProduct(ProductRequestDTO productDTO) {
+    productRepository.findByName(productDTO.name())
         .ifPresent(p -> {throw new DuplicateKeyException(PRODUCT_ALREADY_EXISTS);});
 
-    Category category = categoryService.retrieveCategoryByName(product.getCategory().getName());
+    Category category = categoryService.retrieveCategoryByName(productDTO.category());
 
+    Product product = productMapper.toEntity(productDTO);
     product.setId(UUID.randomUUID().toString());
     product.setCategory(category);
     product.setCreatedAt(Instant.now());
     product.setUpdatedAt(Instant.now());
 
-    return productRepository.insert(product);
+    return productMapper.toDTO(productRepository.insert(product));
   }
 
-  public Product updateProduct(String id, Product updatedProduct) {
+  public ProductResponseDTO updateProduct(String id, ProductRequestDTO updatedProduct) {
     Product product = productRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException(PRODUCT_NOT_FOUND));
 
-    product.setName(updatedProduct.getName());
-    product.setDescription(updatedProduct.getDescription());
-    product.setPrice(updatedProduct.getPrice());
-    product.setStock(updatedProduct.getStock());
+
+    product.setName(updatedProduct.name());
+    product.setDescription(updatedProduct.description());
+    product.setPrice(updatedProduct.price());
+    product.setStock(updatedProduct.stock());
     product.setUpdatedAt(Instant.now());
 
-    return productRepository.save(product);
+    return productMapper.toDTO(productRepository.save(product));
   }
 
   public void deleteProduct(String id) {

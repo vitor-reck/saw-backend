@@ -1,5 +1,6 @@
 package br.vitorreck.app.controllers;
 
+import br.vitorreck.app.domain.dto.category.CategoryResponseDTO;
 import br.vitorreck.app.domain.model.Category;
 import br.vitorreck.app.services.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class CategoryController {
   private final CategoryService categoryService;
 
   @GetMapping
-  public ResponseEntity<List<Category>> getAllCategories() {
+  public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
     return ResponseEntity.status(HttpStatus.OK).body(categoryService.listCategories());
   }
 }
