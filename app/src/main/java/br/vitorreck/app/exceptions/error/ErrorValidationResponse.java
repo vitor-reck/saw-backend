@@ -1,9 +1,9 @@
-package br.vitorreck.app.domain.error;
+package br.vitorreck.app.exceptions.error;
 
 import java.util.List;
 
 public record ErrorValidationResponse(
-    String Title,
+    String title,
     Integer status,
     String detail,
     List<Error> errors

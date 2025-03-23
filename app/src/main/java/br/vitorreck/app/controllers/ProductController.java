@@ -32,7 +32,7 @@ public class ProductController {
   }
 
   @PostMapping
-  public ResponseEntity<ProductResponseDTO> postProduct(@Valid @RequestBody ProductRequestDTO productDTO) throws NoSuchFieldException {
+  public ResponseEntity<ProductResponseDTO> postProduct(@Valid @RequestBody ProductRequestDTO productDTO) {
     return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(productDTO));
   }
 
