@@ -1,4 +1,4 @@
-package br.vitorreck.app.domain.error;
+package br.vitorreck.app.exceptions.error;
 
 public record Error(
     String field,

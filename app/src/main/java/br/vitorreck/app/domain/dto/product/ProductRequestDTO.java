@@ -16,7 +16,7 @@ public record ProductRequestDTO(
     @DecimalMax(value = "999999.99", message = "Price should be maximum value of 999999.99")
     BigDecimal price,
 
-    @NotNull(message = "Category should not be null")
+    @Size(min = 3, max = 50, message = "Category should be 3 characters minimum and 50 characters maximum")
     String category,
 
     @Min(value = 0, message = "Stock should be minimum value of 0")

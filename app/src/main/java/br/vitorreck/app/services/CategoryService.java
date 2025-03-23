@@ -25,7 +25,7 @@ public class CategoryService {
         .toList();
 
     if (categories.isEmpty())
-      throw new NoSuchElementException();
+      throw new NoSuchElementException(CATEGORY_NOT_FOUND);
     else
       return categories;
   }
