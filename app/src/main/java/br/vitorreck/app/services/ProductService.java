@@ -36,7 +36,7 @@ public class ProductService {
       return products;
   }
 
-  public ProductResponseDTO retrieveProductByString(String id) {
+  public ProductResponseDTO retrieveProductById(String id) {
     return productRepository.findById(id)
         .map(productMapper::toDTO)
         .orElseThrow(() -> new NoSuchElementException(PRODUCT_NOT_FOUND));
@@ -61,7 +61,6 @@ public class ProductService {
     Product product = productRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException(PRODUCT_NOT_FOUND));
 
-
     product.setName(updatedProduct.name());
     product.setDescription(updatedProduct.description());
     product.setPrice(updatedProduct.price());
@@ -71,7 +70,7 @@ public class ProductService {
     return productMapper.toDTO(productRepository.save(product));
   }
 
-  public void deleteProduct(String id) {
+  public void deleteProductById(String id) {
     productRepository.findById(id)
         .ifPresentOrElse(p -> {
           productRepository.deleteById(id);

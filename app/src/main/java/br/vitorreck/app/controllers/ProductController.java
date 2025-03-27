@@ -2,7 +2,6 @@ package br.vitorreck.app.controllers;
 
 import br.vitorreck.app.domain.dto.product.ProductRequestDTO;
 import br.vitorreck.app.domain.dto.product.ProductResponseDTO;
-import br.vitorreck.app.domain.model.Product;
 import br.vitorreck.app.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.String;
 import java.util.List;
 
 @RestController
@@ -28,7 +26,7 @@ public class ProductController {
 
   @GetMapping("{id}")
   public ResponseEntity<ProductResponseDTO> getProductByString(@PathVariable String id) {
-    return ResponseEntity.status(HttpStatus.OK).body(productService.retrieveProductByString(id));
+    return ResponseEntity.status(HttpStatus.OK).body(productService.retrieveProductById(id));
   }
 
   @PostMapping
@@ -43,7 +41,7 @@ public class ProductController {
 
   @DeleteMapping("{id}")
   public ResponseEntity<String> deleteProductByString(@PathVariable String id) {
-    productService.deleteProduct(id);
+    productService.deleteProductById(id);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 }
