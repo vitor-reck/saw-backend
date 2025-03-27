@@ -10,7 +10,12 @@ logging:
   level:
     org:
       hibernate: ERROR
+      security: DEBUG
 
 server:
   servlet:
     context-path: /api
+
+jwt:
+  secret:
+    key: ${JWT_SECRET:my-secret-key}
