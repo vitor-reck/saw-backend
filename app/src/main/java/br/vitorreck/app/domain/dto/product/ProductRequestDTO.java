@@ -1,9 +1,11 @@
 package br.vitorreck.app.domain.dto.product;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 
+@Builder
 public record ProductRequestDTO(
 
     @NotNull
