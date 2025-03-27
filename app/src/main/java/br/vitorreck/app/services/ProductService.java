@@ -7,15 +7,19 @@ import br.vitorreck.app.domain.model.Product;
 import br.vitorreck.app.mappers.ProductMapper;
 import br.vitorreck.app.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class ProductService {
 
   private static final String PRODUCT_NOT_FOUND = "Product doesn't exist";
@@ -37,6 +41,7 @@ public class ProductService {
   }
 
   public ProductResponseDTO retrieveProductById(String id) {
+    log.info("GET /products/{id} - retrieving product with ID: {}", id);
     return productRepository.findById(id)
         .map(productMapper::toDTO)
         .orElseThrow(() -> new NoSuchElementException(PRODUCT_NOT_FOUND));
@@ -54,6 +59,7 @@ public class ProductService {
     product.setCreatedAt(Instant.now());
     product.setUpdatedAt(Instant.now());
 
+    log.info("POST /products - creating product with name: {}", product.getName());
     return productMapper.toDTO(productRepository.insert(product));
   }
 
@@ -67,10 +73,12 @@ public class ProductService {
     product.setStock(updatedProduct.stock());
     product.setUpdatedAt(Instant.now());
 
+    log.info("PUT /products/{id} - updating product with ID: {}", id);
     return productMapper.toDTO(productRepository.save(product));
   }
 
   public void deleteProductById(String id) {
+    log.info("DELETE /products/{id} - removing product with ID: {}", id);
     productRepository.findById(id)
         .ifPresentOrElse(p -> {
           productRepository.deleteById(id);

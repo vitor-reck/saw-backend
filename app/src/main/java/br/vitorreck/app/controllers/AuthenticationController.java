@@ -6,6 +6,7 @@ import br.vitorreck.app.domain.model.User;
 import br.vitorreck.app.utils.JwtUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
+@Log4j2
 public class AuthenticationController {
 
   private final AuthenticationManager authenticationManager;
@@ -26,6 +28,7 @@ public class AuthenticationController {
 
   @PostMapping
   public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+    log.info("POST /auth - retrieving user with username: {}", loginRequestDTO.username());
     var usernamePassword = new UsernamePasswordAuthenticationToken(loginRequestDTO.username(), loginRequestDTO.password());
     var auth = authenticationManager.authenticate(usernamePassword);
 
